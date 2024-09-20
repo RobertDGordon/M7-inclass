@@ -1,8 +1,17 @@
-import { useState, useEffect} from 'react'
+import { useState, useEffect, useContext} from 'react'
+import { useData } from '../hooks/useData'
+import { useUserContext } from '../context/UserContext'
+import { MyThemeContext } from '../context/ThemeContext'
 
 function DogBreeds({count}) {
   const [breed, setBreed] = useState('hound')
-  const [images, setImages] = useState([])
+  // const [images, setImages] = useState([])
+  const {currentUser} = useUserContext()
+  const {darkMode} = useContext(MyThemeContext)
+
+  const data = useData(`https://dog.ceo/api/breed/${breed}/images/random/5`)
+
+  const images = data ? data.message : []
 
   useEffect(()=> {
     console.log('DogBreeds.jsx - useEffect: running effect')
@@ -25,7 +34,7 @@ function DogBreeds({count}) {
 
   return (
     <div className='ActivityFinder componentBox'>
-      <h3>Dog Breeds</h3>
+      <h3 className={!darkMode ? 'dark' : 'light'}>Dog Breeds for {currentUser.userName}</h3>
       <label>Choose dog breed:
         <select value={breed}
           onChange={(e) => setBreed(e.target.value)}>
